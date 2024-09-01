@@ -9,6 +9,7 @@ import Dashboard from "./views/Dashboard.jsx";
 
 const router = createBrowserRouter([
     
+    
     {
         path : "/",
         element : <DefaultLayout />,

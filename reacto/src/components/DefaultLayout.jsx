@@ -16,7 +16,7 @@ function DefaultLayout() {
         <div id='defaultLayout'>
             <aside>
                 <Link to="/dashboard" >Dashboard</Link>
-                <Link to="/dashboard" >Users</Link>
+                <Link to="/users" >Users</Link>
             </aside>
             <div className='content'>
                 <header>
