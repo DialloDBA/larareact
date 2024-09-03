@@ -35,7 +35,7 @@ function Signup() {
     return (
 
         <form onSubmit={onSubmit}>
-            <h2 className='ttile'>
+            <h2 className='title'>
                 Signup for Free
             </h2>
             {errors && <div className='alert'>

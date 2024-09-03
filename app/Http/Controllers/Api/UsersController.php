@@ -15,7 +15,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return UserResource::collection(User::query()->orderBy('id', 'desc')->where('id','<>',request()->user()->id)->paginate(10));
+        return UserResource::collection(User::query()->orderBy('id', 'desc')->where('id','<>',request()->user()->id)->paginate(20));
     }
 
     /**
