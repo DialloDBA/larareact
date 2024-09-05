@@ -1,6 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-export default function home() {
+
+export default function home({posts}) {
+  const [title,setTitle] = useState(`Bienvenue sur ${import.meta.env.VITE_APP_NAME}`);
+  useEffect(()=>{
+    document.title = title;
+  },[title,posts]);
+
   return (
     <>
       <div className="p-4 p-md-5 mb-4 text-white rounded bg-dark">

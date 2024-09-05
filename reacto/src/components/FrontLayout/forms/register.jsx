@@ -1,6 +1,6 @@
-import React, { createRef, useEffect, useId, useState } from 'react'
+import React, { useId, useState } from 'react'
 import Loader from "../loader/spinner.jsx";
-export default function register({nameRef,emailRef,passwordRef,passwordConfirmationRef,rememberRef,showLoader,setLoader,submitRegister }) {
+export default function register({ errors, nameRef, emailRef, passwordRef, passwordConfirmationRef, rememberRef, showLoader, setLoader, submitRegister }) {
 
 
     const idName = useId();
@@ -9,9 +9,10 @@ export default function register({nameRef,emailRef,passwordRef,passwordConfirmat
     const idConfirm = useId();
 
     
+
     return (
         <>
-            <form onSubmit={submitRegister}>
+            <form onSubmit={submitRegister} >
                 <div className="mb-3">
                     <label htmlFor={idName} className="form-label">
                         Full name
@@ -23,24 +24,30 @@ export default function register({nameRef,emailRef,passwordRef,passwordConfirmat
                         id={idName}
                         aria-describedby="nameHelp"
                     />
-                    <div id="emailHelp" className="form-text">
-                        We'll never share your email with anyone else.
-                    </div>
+                    {errors.name && errors.name.length > 0 && (
+                        <span className="text-danger text-sm">
+                            {errors.name[0]}
+                        </span>
+                    )}
+
+
                 </div>
                 <div className="mb-3">
                     <label htmlFor={idEmail} className="form-label">
                         Email address
                     </label>
                     <input
-                        type="email"
+                        type="text"
                         ref={emailRef}
                         className="form-control"
                         id={idEmail}
                         aria-describedby="emailHelp"
                     />
-                    <div id="emailHelp" className="form-text">
-                        We'll never share your email with anyone else.
-                    </div>
+                    {errors.email && errors.email.length > 0 && (
+                        <span className="text-danger text-sm">
+                            {errors.email[0]}
+                        </span>
+                    )}
                 </div>
                 <div className="mb-3">
                     <label htmlFor={idPassword} className="form-label">
@@ -52,13 +59,18 @@ export default function register({nameRef,emailRef,passwordRef,passwordConfirmat
                         ref={passwordRef}
                         id={idPassword}
                     />
+                    {errors.password && errors.password.length > 0 && (
+                        <span className="text-danger text-sm">
+                            {errors.password[0]}
+                        </span>
+                    )}
                 </div>
                 <div className="mb-3">
                     <label htmlFor={idConfirm} className="form-label">
-                        Password
+                        Confirm Password
                     </label>
                     <input
-                    ref={passwordConfirmationRef}
+                        ref={passwordConfirmationRef}
                         type="password"
                         className="form-control"
                         id={idConfirm}

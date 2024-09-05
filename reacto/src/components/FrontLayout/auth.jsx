@@ -1,6 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-export default function auth() {
+export default function auth({user,logoutUser}) {
   return (
     <>
       <div className="dropdown">
@@ -10,23 +11,18 @@ export default function auth() {
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          Dropdown button
+         {user.name}
         </button>
         <ul className="dropdown-menu">
           <li>
-            <a className="dropdown-item" href="#">
-              Action
-            </a>
+            <Link className="dropdown-item"to="/admin">
+            Administration 
+            </Link>
           </li>
           <li>
-            <a className="dropdown-item" href="#">
-              Another action
-            </a>
-          </li>
-          <li>
-            <a className="dropdown-item" href="#">
-              Something else here
-            </a>
+            <Link className="dropdown-item" onClick={logoutUser}>
+            Se deconnecter 
+            </Link>
           </li>
         </ul>
       </div>
