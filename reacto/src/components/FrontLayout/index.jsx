@@ -7,6 +7,7 @@ import Auth from './auth.jsx';
 import LoginForm from "../FrontLayout/forms/login.jsx";
 import RegisterForm from "../FrontLayout/forms/register.jsx";
 import {closeModal} from '../../utils/fonctions.jsx'
+import axiosClient from '../../axios/axiosClient.js';
 export default function index() {
 
   const [loader,setLoader] = useState(false);
@@ -25,7 +26,14 @@ export default function index() {
       password: passwordRef.current.value,
       remember: rememberRef.current.checked,
     };
-    console.log(loginData)
+
+    axiosClient.get('/login')
+    .then((data)=>{
+      console.log(data)
+    })
+    .catch((error)=>{
+
+    })
   }
   const register = (e)=>{
     e.preventDefault();
