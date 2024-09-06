@@ -1,7 +1,7 @@
 import React, { createRef, useEffect, useId, useState } from 'react';
 import Loader from '../loader/spinner.jsx'
 
-const login = ({emailRef,passwordRef,rememberRef,showLoader,setLoader,submitLogin })=>{
+const login = ({errors,emailRef,passwordRef,rememberRef,showLoader,setLoader,submitLogin })=>{
 
     const idName = useId();
     const idEmail = useId();
@@ -20,11 +20,13 @@ const login = ({emailRef,passwordRef,rememberRef,showLoader,setLoader,submitLogi
                         ref={emailRef}
                         className="form-control"
                         id={idEmail}
-                        aria-describedby="emailHelp"
+                        aria-describedby="emailHelpLogin"
                     />
-                    <div id="emailHelp" className="form-text">
-                        We'll never share your email with anyone else.
-                    </div>
+                    {errors.email && errors.email.length > 0 && (
+                        <span className="text-danger text-sm">
+                            {errors.email[0]}
+                        </span>
+                    )}
                 </div>
                 <div className="mb-3">
                     <label htmlFor="password" className="form-label">
@@ -36,6 +38,11 @@ const login = ({emailRef,passwordRef,rememberRef,showLoader,setLoader,submitLogi
                         className="form-control"
                         id="password"
                     />
+                    {errors.password && errors.password.length > 0 && (
+                        <span className="text-danger text-sm">
+                            {errors.password[0]}
+                        </span>
+                    )}
                 </div>
                 <div className="mb-3 form-check">
                     <input type="checkbox" ref={rememberRef} className="form-check-input" id={idRemember} />

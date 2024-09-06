@@ -1,5 +1,5 @@
 import React, { createRef, useEffect, useState } from 'react'
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import Category from "../categories/index.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/app.css";
@@ -9,11 +9,10 @@ import RegisterForm from "../FrontLayout/forms/register.jsx";
 import { closeModal } from '../../utils/fonctions.jsx'
 import axiosClient from '../../axios/axiosClient.js';
 import { useAuthStateContext } from '../../contexts/AuthContextProvider.jsx';
-import ToastMessage from './forms/toasts/ToastMessage.jsx';
 export default function index() {
 
-  const { token, user, setToken, setUser, notification, setNotification } = useAuthStateContext();
-const navigate = useNavigate();
+  const { token, user, setToken, setUser, notification, setNotification,alertype,setAlertype } = useAuthStateContext();
+  const navigate = useNavigate();
   useEffect(() => {
     if (token) {
       axiosClient.get('/user')
@@ -28,26 +27,52 @@ const navigate = useNavigate();
   const emailRef = createRef('');
   const passwordRef = createRef('');
   const rememberRef = createRef('');
+  const emailLoginRef = createRef('');
+  const passwordLoginRef = createRef('');
   const passwordConfirmationRef = createRef('');
 
 
-  const login = (e) => {
-    e.preventDefault();
+  const login = (ex) => {
+    ex.preventDefault();
     setLoader(true);
-    const loginData = {
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
+
+    // Capture les données de l'utilisateur à partir des références
+    const userData = {
+      email: emailLoginRef.current.value,
+      password: passwordLoginRef.current.value,
       remember: rememberRef.current.checked,
     };
 
-    axiosClient.post('/login')
-      .then((data) => {
-        console.log(data)
+    // Utilise l'objet `userData` dans la requête
+    axiosClient.post('/login', userData)
+      .then(({ data }) => {
+        setLoader(false);
+        console.log(data);
+        setErrors('');
+        setToken(data.token);
+        setUser(data.user);
+        window.location.reload();
+        setNotification('Connexion Reussie');
       })
-      .catch((error) => {
+      .catch((err) => {
+        const response = err.response;
 
+        if (response && response.status === 422) {
+          if (response.data.errors) {
+            setErrors(response.data.errors);
+          } else {
+            setErrors({
+              email: [response.data.message],
+            });
+          }
+        }
       })
-  }
+      .finally(() => {
+        // Désactive le loader une fois la requête terminée
+        setLoader(false);
+      });
+  };
+
   const register = (e) => {
     e.preventDefault();
     setLoader(true);
@@ -72,7 +97,6 @@ const navigate = useNavigate();
         if (response && response.status === 422) {
           setLoader(false);
           setErrors(response.data.errors);
-          // console.log(response.data.errors.email[0]);
         }
       })
   }
@@ -84,7 +108,7 @@ const navigate = useNavigate();
         setToken('');
         setUser('');
         setNotification(`Vous vous êtes deconnecté(e)`);
-        // window.location.reload();
+        setAlertype(`danger`);
         navigate('/');
       })
       .catch((err) => {
@@ -94,10 +118,11 @@ const navigate = useNavigate();
   return (
     <>
       <div className="container">
+
         <header className="blog-header py-3">
           <div className="row flex-nowrap justify-content-between align-items-center">
             <div className="col-4 pt-1">
-              <Link className="link-secondary" to="https://github.com/DialloDBA"target='__blank'>@DIALLODBA</Link>
+              <Link className="link-secondary" to="https://github.com/DialloDBA" target='__blank'>@DIALLODBA</Link>
             </div>
             <div className="col-4 text-center">
               <Link className="blog-header-logo text-dark" href="/">Laravel React</Link>
@@ -112,14 +137,23 @@ const navigate = useNavigate();
               }
             </div>
           </div>
+
         </header>
 
         <Category />
+        {
+          notification && (
+            <div className={`alert alert-${alertype} alert-dismissible fade show`} role="alert">
+              {notification}
+              <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          )
+        }
+
       </div>
       <main className="container">
-        {/* <ToastMessage /> */}
         <Outlet />
-        <div className="modal fade" id="staticBackdropAuth" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropAuthLabel" aria-hidden="true">
+        <div  className="modal fade" id="staticBackdropAuth" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropAuthLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -168,7 +202,7 @@ const navigate = useNavigate();
                       {
                         (token && user.id) ? <Auth user={user} logoutUser={logout} /> : ''
                       }
-                      <LoginForm errors={errors} emailRef={emailRef} passwordRef={passwordRef} rememberRef={rememberRef} showLoader={loader} setLoader={setLoader} submitLogin={login} />
+                      <LoginForm errors={errors} emailRef={emailLoginRef} passwordRef={passwordLoginRef} rememberRef={rememberRef} showLoader={loader} setLoader={setLoader} submitLogin={login} />
                     </div>
                     <div
                       className="tab-pane fade"
