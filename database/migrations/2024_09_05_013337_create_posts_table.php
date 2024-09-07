@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Category;
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -13,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->string('title',250)->unique();
+            $table->string('slug',250)->unique();
+            $table->text('description');
+            $table->string('image')->nullable();
+            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Category::class);
+            $table->enum("active",[0,1])->default(0);
             $table->timestamps();
         });
     }

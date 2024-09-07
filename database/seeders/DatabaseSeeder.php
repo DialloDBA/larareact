@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::truncate();
+        Category::truncate();
         User::factory(100)->create();
 
         User::factory()->create([
@@ -22,6 +24,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@admin.com',
             'password' => Hash::make('12345678'),
         ]);
-        $this->call([CategorySeeder::class]);
+        $this->call([CategorySeeder::class,PostSeeder::class]);
+
     }
 }

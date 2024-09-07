@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import axiosClient from '../axios/axiosClient';
 
 
 export default function home({posts}) {
@@ -7,6 +8,15 @@ export default function home({posts}) {
     document.title = title;
   },[title,posts]);
 
+  const getPosts = () =>{
+    axiosClient.get("/posts")
+    .then(({data})=>{
+
+    })
+    .catch((error)=>{
+      
+    })
+  }
   return (
     <>
       <div className="p-4 p-md-5 mb-4 text-white rounded bg-dark">

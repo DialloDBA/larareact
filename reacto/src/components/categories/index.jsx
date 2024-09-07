@@ -27,14 +27,12 @@ export default function index() {
                 {
                     MemoCats && MemoCats.length > 0 && cats.map((c, index) => {
                         return (
-                            <Link to={`/categories/${c.id}`} className="p-2 link-secondary" key={c.id}>
+                            <Link to={`/categories/${c.slug}`} className="p-2 link-secondary" key={c.id}>
                                 {c.name}
                             </Link>
                         );
                     })
                 }
-
-
             </nav>
         </div>
     );

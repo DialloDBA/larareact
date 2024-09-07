@@ -15,7 +15,6 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        Category::truncate();
         $user = User::first(); // On suppose qu'il y a déjà un utilisateur
 
         if (!$user) {
@@ -43,8 +42,8 @@ class CategorySeeder extends Seeder
             Category::create([
                 'name' => $category['name'],
                 'slug' => $category['slug'],
-                'image' => null, // Vous pouvez ajouter des images si disponibles
-                'description' => null, // Vous pouvez ajouter des descriptions si disponibles
+                'image' => 'https://static.wixstatic.com/media/d15f39_d01b685c0e274c44a1c54f7f3c8c1cd7~mv2.png', // Vous pouvez ajouter des images si disponibles
+                'description' => "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos doloribus quos aliquid magni, recusandae maiores ipsum quasi, labore sed voluptate ea error dolorum facilis quas aspernatur beatae dolor id quidem aliquam suscipit? Fugiat est numquam autem provident! Ea, itaque quisquam commodi omnis illum voluptatem quae non vitae doloribus sapiente explicabo perferendis dicta enim quaerat culpa eligendi aspernatur veritatis animi expedita magni molestiae, assumenda minima modi. Vero veritatis quibusdam autem! Vel quidem reiciendis neque optio unde ut perferendis dolores sed recusandae? Officiis dignissimos nam ipsam ad, itaque corrupti omnis iste quas facilis ab, explicabo consequuntur dicta officia at eos? Facilis, dolorum.", // Vous pouvez ajouter des descriptions si disponibles
                 'user_id' => $user->id
             ]);
         }

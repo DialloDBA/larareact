@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\CategoriesResource;
+use App\Http\Resources\PostResources;
+use App\Models\Category;
+use App\Models\Post;
 
 class AuthController extends Controller
 {
@@ -23,8 +27,29 @@ class AuthController extends Controller
 
     public function categories()
     {
-        $categories = User::query()->select('name','id')->limit(10)->get();
+        $categories = CategoriesResource::collection(Category::all());
         return response(compact("categories"));
+    }
+    public function posts()
+    {
+        $categories = PostResources::collection(Post::all());
+        return response(compact("posts"));
+    }
+    public function showCategorie($c)
+    {
+        // Récupération d'une seule catégorie par son slug
+        $category = Category::where('slug', $c)->with('posts')->first();
+        // $category = Category::where('slug', $c)->first();
+        // Vérification si la catégorie existe
+        if (!$category) {
+            return response()->json(['error' => 'Category not found'], 404);
+        }
+
+        // Utilisation de la ressource pour la transformation
+        $categorieResource = new CategoriesResource($category);
+
+        // Retourne la catégorie dans la réponse
+        return response()->json($category, 200);
     }
 
     /**
@@ -72,32 +97,33 @@ class AuthController extends Controller
         //
     }
 
-    public function login(LoginUserRequest $request) {
+    public function login(LoginUserRequest $request)
+    {
         $credentials = $request->validated();
         // $credentials['password'] = Hash::make($credentials['password']);
-        if(!Auth::attempt($credentials)){
+        if (!Auth::attempt($credentials)) {
             return response()->json([
-                'message' =>"Email ou mot de passe incorrecte.",
-            ],422);
+                'message' => "Email ou mot de passe incorrecte.",
+            ], 422);
         }
         $user = Auth::user();
         $token = $user->createToken(time() * 1000)->plainTextToken;
-        return response(compact("user","token"));
-        
+        return response(compact("user", "token"));
     }
     public function register(StoreUserRequest $request)
     {
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
         $user = $user = User::create($data);
-        if($user){
+        if ($user) {
             $token = $user->createToken(time() * 1000)->plainTextToken;
             return response(compact("user", "token"));
         }
         abort(422);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         $user = $request->user();
         $user->currentAccessToken()->delete();
         return '';
