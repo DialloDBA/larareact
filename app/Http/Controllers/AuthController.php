@@ -25,6 +25,18 @@ class AuthController extends Controller
         return response(compact("users"));
     }
 
+    public function getCategoriesWithLatestPosts()
+    {
+        // Récupérer les catégories avec leurs trois derniers posts
+        $categories = Category::with(['posts' => function ($query) {
+            $query->latest()->limit(1);
+        }])->get();
+        // $categories = CategoriesResource::collection($categories);
+        $latest = $categories->first();
+        return response(compact("categories","latest"));
+    }
+
+
     public function categories()
     {
         $categories = CategoriesResource::collection(Category::all());
@@ -34,6 +46,15 @@ class AuthController extends Controller
     {
         $categories = PostResources::collection(Post::all());
         return response(compact("posts"));
+    }
+    public function readPost(Post $post)
+    {
+        $userpost = $post->user;
+        $category = $post->category;
+        $related = $category ? $category->posts()->where('id', '<>', $post->id)->latest()->limit(5)->get()
+            : collect();
+        $comments = $post->comments()->with('user')->get();
+        return response(compact('post', 'userpost', 'category', 'comments', 'related'));
     }
     public function showCategorie($c)
     {

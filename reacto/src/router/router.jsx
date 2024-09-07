@@ -10,7 +10,7 @@ import Single from "../components/categories/single.jsx";
 import Cats from "../views/admin/categories/index.jsx";
 import CreateCats from "../views/admin/categories/create.jsx";
 import ShowSingleCat from "../views/admin/categories/show.jsx";
-
+import SinglePost from "../components/posts/single.jsx";
 const router = createBrowserRouter([
     {
         path: '/',
@@ -27,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: 'categories/:slug',  // Chemin relatif
                 element: <Single key="showSingleCatx" />
+            },
+            {
+                path: 'posts/:slug',  // Chemin relatif
+                element: <SinglePost key="showSinglePost" />
             },
             {
                 path: 'contact',  // Chemin relatif

@@ -1,63 +1,66 @@
 import React, { useEffect, useState } from 'react'
 import axiosClient from '../axios/axiosClient';
+import Post from "./row.jsx";
+import { Link, useNavigate } from 'react-router-dom';
+import Loader from '../components/FrontLayout/loader/Loader';
 
+export default function home({ posts }) {
+  const [title, setTitle] = useState(`Bienvenue sur ${import.meta.env.VITE_APP_NAME}`);
+  const navigate = useNavigate();
+  const [latest, setLatest] = useState([]);
+  const [loader, setLoader] = useState(true);
 
-export default function home({posts}) {
-  const [title,setTitle] = useState(`Bienvenue sur ${import.meta.env.VITE_APP_NAME}`);
-  useEffect(()=>{
+  useEffect(() => {
     document.title = title;
-  },[title,posts]);
-
-  const getPosts = () =>{
-    axiosClient.get("/posts")
-    .then(({data})=>{
-
-    })
-    .catch((error)=>{
-      
-    })
+    getLatestPosts();
+  }, [title]);
+  const getLatestPosts = () => {
+    axiosClient.get("/app/")
+      .then(({ data }) => {
+        setLoader(false);
+        data.categories.forEach(element => {
+          let pp = element.posts;
+          let cat = element.name;
+          pp.map(p => {
+            setLatest(prevLatest => [...prevLatest, { ...p, category: cat }]);
+          });
+        });
+      })
+      .catch((error) => {
+        setLoader(false);
+        console.log(error)
+      })
+  }
+  const gotoPost = (slug)=>{
+    navigate(`/posts/${slug}`);
   }
   return (
     <>
-      <div className="p-4 p-md-5 mb-4 text-white rounded bg-dark">
-        <div className="col-md-6 px-0">
-          <h1 className="display-4 fst-italic">Title of a longer featured blog post</h1>
-          <p className="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
-          <p className="lead mb-0"><a href="#" className="text-white fw-bold">Continue reading...</a></p>
-        </div>
-      </div>
 
+    {loader && <Loader />}
+      {
+        latest.map((p, index) => {
+         return index === 0 ? (
+            <div key={p.slug} className="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+              <div className="col-md-6 px-0">
+                <h1 className="display-4 fst-italic">{p.title}</h1>
+                <p className="lead my-3">
+                {p.description.length > 10 ? `${p.description.substring(0, 50)}...` : p.description}
+                </p>
+                <p className="lead mb-0">
+                <Link onClick={(e)=>gotoPost(p.slug)} className="text-white fw-bold text-decoration-none" >Lire la suite...</Link>
+                </p>
+              </div>
+            </div>
+          ) : ''
+        })
+      }
       <div className="row mb-2">
-        <div className="col-md-6">
-          <div className="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-            <div className="col p-4 d-flex flex-column position-static">
-              <strong className="d-inline-block mb-2 text-primary">World</strong>
-              <h3 className="mb-0">Featured post</h3>
-              <div className="mb-1 text-muted">Nov 12</div>
-              <p className="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" className="stretched-link">Continue reading</a>
-            </div>
-            <div className="col-auto d-none d-lg-block">
-              <svg className="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-            <div className="col p-4 d-flex flex-column position-static">
-              <strong className="d-inline-block mb-2 text-success">Design</strong>
-              <h3 className="mb-0">Post title</h3>
-              <div className="mb-1 text-muted">Nov 11</div>
-              <p className="mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" className="stretched-link">Continue reading</a>
-            </div>
-            <div className="col-auto d-none d-lg-block">
-              <svg className="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-
-            </div>
-          </div>
-        </div>
+        {
+          latest.map((p, index) => {
+            return  index !== 0 && <Post post={p} key={index} />
+          })
+        }
       </div>
     </>
   )

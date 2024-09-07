@@ -10,6 +10,8 @@ Route::get('/', function () {
 Route::prefix("api/app")->name("app.")->group(function(){
     Route::controller(AuthController::class)->group(function(){
         Route::get('/posts','posts')->name("posts.index");
+        Route::get('/','getCategoriesWithLatestPosts')->name("index");
+        Route::get('/posts/{post:slug}','readPost')->name("posts.readPost");
         Route::get('/categories','categories')->name("categories.index");
         Route::get('/categories/{slug}','showCategorie')->name("categories.show");
     });

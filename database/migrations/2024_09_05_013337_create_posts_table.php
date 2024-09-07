@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('slug',250)->unique();
             $table->text('description');
             $table->string('image')->nullable();
+            $table->string('image_max')->default("https://via.placeholder.com/780x450.png");
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Category::class);
             $table->enum("active",[0,1])->default(0);

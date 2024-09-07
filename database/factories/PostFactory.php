@@ -26,7 +26,7 @@ class PostFactory extends Factory
             'title' => $title,
             'slug' => Str::slug($title),
             'description' => $this->faker->paragraph,
-            'image' => $this->faker->imageUrl(),
+            'image' => "https://via.placeholder.com/200x250.png",
             'user_id' => User::factory(),
             'category_id' => Category::factory(),
             'created_at' => now(),

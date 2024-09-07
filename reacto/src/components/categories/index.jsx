@@ -21,9 +21,7 @@ export default function index() {
     return (
         <div className="nav-scroller py-1 mb-2">
             <nav className="nav d-flex justify-content-between">
-                <a className="p-2 link-secondary" href="#">
-                    World
-                </a>
+                
                 {
                     MemoCats && MemoCats.length > 0 && cats.map((c, index) => {
                         return (

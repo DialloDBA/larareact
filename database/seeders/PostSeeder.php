@@ -14,19 +14,24 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-       // On s'assure qu'il y a des utilisateurs et des catégories
-       $users = User::all();
-       $categories = Category::all();
+        // On s'assure qu'il y a des utilisateurs et des catégories
+    $users = User::all();
+    $categories = Category::all();
 
-       if ($users->isEmpty() || $categories->isEmpty()) {
-           $this->command->info('No users or categories found. Please seed users and categories first.');
-           return;
-       }
+    if ($users->isEmpty() || $categories->isEmpty()) {
+        $this->command->info('No users or categories found. Please seed users and categories first.');
+        return;
+    }
 
-       // Création des articles
-       \App\Models\Post::factory(10)->create([
-           'user_id' => $users->random()->id,
-           'category_id' => $categories->random()->id,
-       ]);
+    foreach ($categories as $category) {
+        // Création des articles
+        $posts = \App\Models\Post::factory(3)->create([
+            'user_id' => $users->random()->id,
+            'category_id' => $category->id,
+        ]);
+
+        // Mise à jour des titres des posts
+       
+    }
     }
 }
